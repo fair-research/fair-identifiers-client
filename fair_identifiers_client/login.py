@@ -6,9 +6,8 @@ import sys
 from six.moves import input
 from globus_sdk import NativeAppAuthClient
 
-from identifiers_client.config import config
-from identifiers_client.local_server import (start_local_server,
-                                             LocalServerError)
+from fair_identifiers_client.config import config
+from fair_identifiers_client.local_server import (start_local_server, LocalServerError)
 
 
 def _login_client(config):

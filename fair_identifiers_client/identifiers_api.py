@@ -3,7 +3,7 @@ from globus_sdk import (AccessTokenAuthorizer, ClientCredentialsAuthorizer,
 from globus_sdk.base import BaseClient, safe_stringify
 from globus_sdk.exc import GlobusAPIError
 
-from identifiers_client.login import extract_and_save_tokens
+from fair_identifiers_client.login import extract_and_save_tokens
 
 _namespace_properties = [
     'description', 'display_name', 'creators', 'admins', 'identifier_admins',
@@ -19,7 +19,7 @@ _identifier_json_props = ['metadata', 'visible_to', 'location', 'checksums']
 
 
 def identifiers_client(config, **kwargs):
-    app_name = 'identifier_client'
+    app_name = 'fair_identifiers_client'
     base_url = config.get('client', 'service_url')
     client_id = config.get('client', 'client_id')
     access_token = config.get('tokens', 'access_token')
@@ -76,12 +76,8 @@ class IdentifierClient(BaseClient):
 
     error_class = IdentifierClientError
 
-    def __init__(self, authorizer=None,
-                 base_url="https://identifiers.globus.org/", **kwargs):
-        super().__init__(
-            self, "identifier", base_url=base_url,
-            authorizer=authorizer, **kwargs
-        )
+    def __init__(self, authorizer=None, base_url="https://identifiers.fair-research.org/", **kwargs):
+        super().__init__(self, "identifier", base_url=base_url, authorizer=authorizer, **kwargs)
 
     def create_namespace(self, **kwargs):
         """
