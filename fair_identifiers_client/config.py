@@ -1,27 +1,21 @@
 from os import path, environ
 from six.moves.configparser import ConfigParser
 
-_default = path.join(path.expanduser('~'), '.globus_identifier')
+_default = path.join(path.expanduser('~'), '.fair_identifier')
 IDENTIFIER_CONFIG_FILE = path.abspath(
     environ.get('IDENTIFIER_CONFIG_FILE', _default))
 IDENTIFIER_ENVIRONMENT = environ.get('IDENTIFIER_ENVIRONMENT', 'production')
 
 _identifier_environments = {
     'dev': {
-        'service_url': ('http://localhost:5000/'),
-        #        'client_id': '8bd25a6b-591d-4267-82a6-285a813acace',
-        'client_id':
-        'b61613f8-0da8-4be7-81aa-1c89f2c0fe9f',
-        'scope':
-        ('https://auth.globus.org/scopes/identifiers.globus.org/create_update')
+        'service_url': 'https://identifiers-test.fair-research.org/',
+        'client_id': '653d6d76-70d0-4993-bbd1-459e077b7c16',
+        'scope': 'https://auth.globus.org/scopes/identifiers.fair-research.org/writer'
     },
     'production': {
-        'service_url':
-        'https://identifiers.globus.org/',
-        'client_id':
-        'b61613f8-0da8-4be7-81aa-1c89f2c0fe9f',
-        'scope':
-        ('https://auth.globus.org/scopes/identifiers.globus.org/create_update')
+        'service_url': 'https://identifiers.fair-research.org/',
+        'client_id': '653d6d76-70d0-4993-bbd1-459e077b7c16',
+        'scope': 'https://auth.globus.org/scopes/identifiers.fair-research.org/writer'
     }
 }
 

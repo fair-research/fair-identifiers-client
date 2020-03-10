@@ -7,7 +7,7 @@ name = "pypi"
 [packages]
 globus-sdk = "*"
 six = "*"
-globus-identifiers-client = {path = ".", editable = true}
+fair-identifiers-client = {path = ".", editable = true}
 
 [dev-packages]
 "python-language-server[all]" = "*"

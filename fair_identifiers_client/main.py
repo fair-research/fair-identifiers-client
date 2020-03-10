@@ -3,16 +3,13 @@ import sys
 import json
 import logging
 
-from identifiers_client.local_server import is_remote_session
-from identifiers_client.identifiers_api import (
-    identifiers_client, IdentifierClientError, IdentifierNotLoggedIn)
-from identifiers_client.config import config
-from identifiers_client.login import (
-    LOGGED_IN_RESPONSE, LOGGED_OUT_RESPONSE, check_logged_in,
-    do_link_login_flow, do_local_server_login_flow, revoke_tokens)
-from identifiers_client.helpers import (subcommand, argument,
-                                        clear_internal_args,
-                                        load_metadata, set_checksum_args)
+from fair_identifiers_client.config import config
+from fair_identifiers_client.local_server import is_remote_session
+from fair_identifiers_client.identifiers_api import (identifiers_client, IdentifierClientError, IdentifierNotLoggedIn)
+from fair_identifiers_client.login import (LOGGED_IN_RESPONSE, LOGGED_OUT_RESPONSE, check_logged_in, do_link_login_flow,
+                                           do_local_server_login_flow, revoke_tokens)
+from fair_identifiers_client.helpers import (subcommand, argument, clear_internal_args, load_metadata,
+                                             set_checksum_args)
 from argparse import ArgumentParser
 
 log = logging.getLogger(__name__)
@@ -65,8 +62,7 @@ checksum_arguments = [argument('--checksum-{}'.format(alg),
                   "This will be implied if using a remote connection.")),
     ],
     parent=subparsers,
-    help=('Log in via Globus to get credentials for '
-          'the Identifiers client'),
+    help='Log in via Globus to get credentials for the FAIR Research Identifiers Client',
 )
 def login(args):
     # if not forcing, stop if user already logged in
@@ -82,7 +78,7 @@ def login(args):
         do_local_server_login_flow()
 
 
-@subcommand([], parent=subparsers, help='Log out of Identifier client')
+@subcommand([], parent=subparsers, help='Log out of FAIR Research Identifiers Client')
 def logout(args):
     revoke_tokens(config)
     config.set('tokens', 'access_token', '')

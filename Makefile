@@ -21,11 +21,11 @@ Pipfile.lock: Pipfile
 	pipenv sync --python $(PYTHON_VERSION)
 	pipenv clean
 
-.venv/bin/globus-identifiers-client: .venv
+.venv/bin/fair-identifiers-client: .venv
 	pipenv run python setup.py install
 
-install: .venv/bin/globus-identifiers-client
-	ln -sf .venv/bin/globus-identifiers-client .
+install: .venv/bin/fair-identifiers-client
+	ln -sf .venv/bin/fair-identifiers-client .
 
 .venv/bin/pyls: Pipfile.lock
 	pipenv sync --dev --python $(PYTHON_VERSION)
@@ -37,7 +37,7 @@ dev: .venv/bin/pyls
 clean:
 	pipenv --rm
 	find -name '*.pyc' -delete
-	-rm globus-identifiers-client
+	-rm fair-identifiers-client
 	-rm -r build
 	-rm -r dist
 	-rm -r *.egg-info
