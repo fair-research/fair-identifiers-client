@@ -2,7 +2,7 @@
 Client SDK and CLI for the FAIR Research Identifiers Service.
 
 ## Summary
-The fair-identifiers-client package provides command line and SDK interfaces to the Globus Identifiers Service.
+The fair-identifiers-client package provides command line and SDK interfaces to the FAIR Research Identifiers Service.
 
 ## Pre-Requisites
 Building and installing the fair-identifiers-client requires the use of the [`pipenv`](https://pipenv.readthedocs.io/en/latest/) tool. Pre-install it with the command `pip install --user --upgrade pipenv` or a similar command suitable for your installation.
@@ -13,7 +13,7 @@ The default method of building the client is simply to use `make install` which 
 At present, only python versions 2.7 and 3.6 have been tested.
 
 ## Running
-A completed build will create an executable file `fair-identifiers-client` in the base directory for the project.  Additional help running the command can be found using the command `fair-identifiers-client --help`. Typically, the first command to be executed will be `fair-identifiers-client login` to create a cache of the credentials needed to interact with the service in subsequent invocations of the command. The `login` command will open a web browser which will step you through logging in with your Globus identity and for providing consent for the command line tool to perform operations on the Globus Identifiers Service on your behalf.
+A completed build will create an executable file `fair-identifiers-client` in the base directory for the project.  Additional help running the command can be found using the command `fair-identifiers-client --help`. Typically, the first command to be executed will be `fair-identifiers-client login` to create a cache of the credentials needed to interact with the service in subsequent invocations of the command. The `login` command will open a web browser which will step you through logging in with your Globus identity and for providing consent for the command line tool to perform operations on the FAIR Research Identifiers Service on your behalf.
 
 ## Use as an SDK
 The SDK functionality is encapsulated in the source file `fair_identifiers_client/identifiers_api.py`. The Doc String comments on the various methods of the `IdentifierClient` class describe the parameters to the operations.
@@ -30,7 +30,7 @@ client.create_identifier(namespace='<my_namespace>', visible_to=['public'])
 
 ## Use as a Command Line Client
 
-A CLI client comes with the installation, and can be used with `fair-identifiers-client`
+A CLI client application comes with the installation, and can be used with `fair-identifiers-client`
 
 ### Examples
 
