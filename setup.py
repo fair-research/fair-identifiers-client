@@ -9,10 +9,11 @@ with open(os.path.join(BASE_DIR, 'README.md')) as f:
 
 setup(
     name='fair-identifiers-client',
-    version='0.3.0.dev2',
+    version='0.3.0.dev3',
     url='https://github.com/fair-research/fair-identifiers-client',
     author="FAIR Research Team",
     description='FAIR Research Identifiers Service Client',
+    long_description=long_description,
     include_package_data=True,
     packages=find_packages(),
     install_requires=[
