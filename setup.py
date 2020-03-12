@@ -3,10 +3,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='fair-identifiers-client',
-    version='0.3.0.dev0',
+    version='0.3.0.dev1',
     url='https://github.com/fair-research/fair-identifiers-client',
-    author="Mike D'Arcy",
-    author_email='mdarcy@isi.edu',
+    author="FAIR Research Team",
     description='FAIR Research Identifiers Service Client',
     include_package_data=True,
     packages=find_packages(),
