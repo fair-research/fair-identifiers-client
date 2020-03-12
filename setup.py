@@ -1,9 +1,15 @@
+import os
 from setuptools import setup, find_packages
+
+# Get the long description from the README file
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(BASE_DIR, 'README.md')) as f:
+    long_description = f.read()
 
 
 setup(
     name='fair-identifiers-client',
-    version='0.3.0.dev1',
+    version='0.3.0.dev2',
     url='https://github.com/fair-research/fair-identifiers-client',
     author="FAIR Research Team",
     description='FAIR Research Identifiers Service Client',
