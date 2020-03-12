@@ -1,0 +1,4 @@
+include README.md
+include LICENSE
+
+graft fair_identifiers_client

@@ -2,7 +2,11 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='fair-identifiers-client', version='0.3.0',
+    name='fair-identifiers-client',
+    version='0.3.0.dev0',
+    url='https://github.com/fair-research/fair-identifiers-client',
+    author="Mike D'Arcy",
+    author_email='mdarcy@isi.edu',
     description='FAIR Research Identifiers Service Client',
     include_package_data=True,
     packages=find_packages(),
@@ -14,5 +18,15 @@ setup(
         'console_scripts': [
             'fair-identifiers-client = fair_identifiers_client:main'
         ]
-    }
+    },
+    license='Apache 2.0',
+    classifiers=[
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Operating System :: POSIX',
+    ]
 )
