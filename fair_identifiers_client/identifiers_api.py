@@ -14,8 +14,8 @@ _namespace_json_props = [
     'creators', 'admins', 'identifier_admins', 'provider_config'
 ]
 
-_identifier_properties = ['location', 'checksums', 'metadata', 'visible_to']
-_identifier_json_props = ['metadata', 'visible_to', 'location', 'checksums']
+_identifier_properties = ['location', 'checksums', 'metadata', 'visible_to', 'active', 'replaces', 'replaced_by']
+_identifier_json_props = ['metadata', 'visible_to', 'location', 'checksums', 'active', 'replaces', 'replaced_by']
 
 
 def identifiers_client(config, **kwargs):
@@ -99,7 +99,7 @@ class IdentifierClient(BaseClient):
           The type of the provider used for minting "
           ``provider-config`` (*dict*)
           Configuration for the provider used for "
-                      "minting identfiers in JSON format
+                      "minting identifiers in JSON format
 
         """
         kwargs, body = _split_dict(kwargs, _namespace_properties)
@@ -129,7 +129,7 @@ class IdentifierClient(BaseClient):
           The type of the provider used for minting external identifiers
           ``provider-config`` (*dict*)
           Configuration for the provider used for minting external
-          identfiers in JSON format
+          identifiers in JSON format
 
         """
         kwargs, body = _split_dict(kwargs, _namespace_properties)
@@ -171,6 +171,8 @@ class IdentifierClient(BaseClient):
         ** Parameters **
           ``namespace`` (*string*)
           The id for the namespace in which to add the identifier
+          ``replaces`` (*string*)
+          The id of the identifier which this identifier replaces, if any.
           ``location`` (* array of string*)
           A list of URLs from which the data referred to by the identifier
           may be retrieved
@@ -225,6 +227,12 @@ class IdentifierClient(BaseClient):
         ** Parameters **
           ``identifier_id`` (*string*)
           The identification url for the identifier
+          ``active`` (*boolean*)
+          The state of the identifier. It is either active or inactive
+          ``replaces`` (*string*)
+          The id of the identifier which this identifier replaces, if any
+          ``replaced_by`` (*string*)
+          The id of the identifier that replaces this identifier, if any
           ``location`` (* array of string*)
           A list of URLs from which the data referred to by the identifier
           may be retrieved

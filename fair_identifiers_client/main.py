@@ -47,13 +47,12 @@ checksum_arguments = [argument('--checksum-{}'.format(alg),
                       for alg in SUPPORTED_CHECKSUMS]
 
 
-@subcommand(
-    [
+@subcommand([
         argument(
             '--force',
             action='store_true',
             default=False,
-            help=('Do a fresh login, ignoring any existing credentials')),
+            help='Do a fresh login, ignoring any existing credentials'),
         argument(
             "--no-local-server",
             action='store_true',
@@ -147,14 +146,15 @@ def logout(args):
         "(tab) title"),
     argument(
         "--favicon-url",
-        help="A URL for the favicon to be discplayed in the "
+        help="A URL for the favicon to be displayed in the "
         "page/tab title"),
     argument(
         "--preamble-text",
         help="Short text placed above the metadata of the "
         "identifier on the landing page")
-],
-            parent=subparsers)
+    ],
+    parent=subparsers
+)
 def namespace_create(args):
     """
     Create a new namespace
@@ -196,8 +196,9 @@ def namespace_create(args):
         "--provider-config",
         help="Configuration for the provider used for "
         "minting identfiers in JSON format")
-],
-            parent=subparsers)
+    ],
+    parent=subparsers
+)
 def namespace_update(args):
     """
     Update the properties of an existing namespace
@@ -220,7 +221,8 @@ def namespace_update(args):
         help="The id for the namespace to display",
         required=True)
 ],
-            parent=subparsers)
+    parent=subparsers
+)
 def namespace_display(args):
     """
     Display a namespace
@@ -234,8 +236,9 @@ def namespace_display(args):
         "--namespace-id",
         help="The id for the namespace to update",
         required=True)
-],
-            parent=subparsers)
+    ],
+    parent=subparsers
+)
 def namespace_delete(args):
     """
     Remove an existing namespace
@@ -250,6 +253,9 @@ def namespace_delete(args):
         help="The id for the namespace in which to add the "
         "identifier",
         required=True),
+    argument(
+        "--replaces",
+        help="The id of the identifier which this identifier replaces"),
     argument(
         "--locations",
         nargs='+',
@@ -266,10 +272,10 @@ def namespace_delete(args):
         help='Additional metadata associated with the '
         'identifier in JSON format '
         '(e.g. file://foo.json or \'{"author": "John Doe", "year": 2018}\')',
-        type=load_metadata
-    ),
-] + checksum_arguments,
-            parent=subparsers)
+        type=load_metadata)
+    ] + checksum_arguments,
+    parent=subparsers
+)
 def identifier_create(args):
     """
     Create a new identifier
@@ -288,6 +294,22 @@ def identifier_create(args):
         help="The id for the identifier to update",
         required=True),
     argument(
+        "--activate",
+        help="Mark the identifier as active",
+        action='store_true',
+        default=None),
+    argument(
+        "--deactivate",
+        help="Mark the identifier as inactive",
+        action='store_true',
+        default=None),
+    argument(
+        "--replaces",
+        help="The id of the identifier which this identifier replaces"),
+    argument(
+        "--replaced-by",
+        help="The id of the identifier that replaces this identifier"),
+    argument(
         "--locations",
         nargs='+',
         help="A list of URLs from which the data referred to "
@@ -298,10 +320,10 @@ def identifier_create(args):
              'identifier in JSON format '
              '(e.g. file://foo.json or '
              '\'{"author": "John Doe", "year": 2018}\')',
-        type=load_metadata
-        ),
+        type=load_metadata)
     ] + checksum_arguments,
-            parent=subparsers)
+    parent=subparsers
+)
 def identifier_update(args):
     """
     Update the state of an identifier
@@ -312,14 +334,23 @@ def identifier_update(args):
     args = set_checksum_args(args)
     if args.get('locations'):
         args['location'] = args.pop('locations')
+    activate = args.get('activate')
+    deactivate = args.get('deactivate')
+    if activate and deactivate:
+        raise ValueError("Error: argument --activate: not allowed with argument --deactivate")
+    if activate:
+        args['active'] = args.pop('activate')
+    elif deactivate:
+        args['active'] = not args.pop('deactivate')
     return client.update_identifier(identifier_id, **args)
 
 
 @subcommand([
     argument(
         "--identifier", help="The id for identifier to display", required=True)
-],
-            parent=subparsers)
+    ],
+    parent=subparsers
+)
 def identifier_display(args):
     """
     Display the state of an identifier
@@ -336,8 +367,8 @@ def identifier_display(args):
     argument(
         "--function",
         help="The corresponding function used to generate the above checksum",
-        required=True
-    )],
+        required=True)
+    ],
     parent=subparsers
 )
 def identifier_from_checksum(args):
