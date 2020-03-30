@@ -337,7 +337,7 @@ def identifier_update(args):
     activate = args.get('activate')
     deactivate = args.get('deactivate')
     if activate and deactivate:
-        raise ValueError("Error: argument --activate: not allowed with argument --deactivate")
+        raise IdentifierClientError("Error: argument --activate: not allowed with argument --deactivate")
     if activate:
         args['active'] = args.pop('activate')
     elif deactivate:
