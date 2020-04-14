@@ -9,7 +9,7 @@ from fair_identifiers_client.identifiers_api import (identifiers_client, Identif
 from fair_identifiers_client.login import (LOGGED_IN_RESPONSE, LOGGED_OUT_RESPONSE, check_logged_in, do_link_login_flow,
                                            do_local_server_login_flow, revoke_tokens)
 from fair_identifiers_client.helpers import (subcommand, argument, clear_internal_args, load_metadata,
-                                             set_checksum_args)
+                                             set_checksum_args, parse_none_values)
 from argparse import ArgumentParser
 
 log = logging.getLogger(__name__)
@@ -332,8 +332,12 @@ def identifier_update(args):
     identifier_id = args.identifier
     args = clear_internal_args(vars(args))
     args = set_checksum_args(args)
-    if args.get('locations'):
-        args['location'] = args.pop('locations')
+    optional_values = [
+        ('replaces', args['replaces'], None),
+        ('replaced_by', args['replaced_by'], None),
+        ('location', args['locations'], [])
+    ]
+    args = (parse_none_values(optional_values))
     activate = args.get('activate')
     deactivate = args.get('deactivate')
     if activate and deactivate:

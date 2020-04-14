@@ -80,3 +80,15 @@ def set_checksum_args(arguments):
     if checksum_args:
         arguments['checksums'] = checksum_args
     return arguments
+
+
+def parse_none_values(values, none_value='None'):
+    options = {}
+    for option_name, option_value, option_none_value in values:
+        if isinstance(option_value, str) and option_value == none_value:
+            options[option_name] = option_none_value
+        elif isinstance(option_value, list) and option_value == [none_value]:
+            options[option_name] = option_none_value
+        elif option_value:
+            options[option_name] = option_value
+    return options

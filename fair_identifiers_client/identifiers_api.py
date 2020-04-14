@@ -56,17 +56,19 @@ class IdentifierNotLoggedIn(IdentifierClientError):
         self.message = err_msg
 
 
-def _split_dict(in_dict, key_names):
+def _split_dict(in_dict, key_names, nullable_fields=frozenset()):
     """
     Split a dict into two dicts. Keys in key_names go into the new dict if
-    their value is present and not None.
+    their value is present and not None, allowing for None values if the key
+    name is present in the nullable_fields set.
     return (updated original dict, new dict)
     """
     new_dict = {}
     for key_name in key_names:
-        val = in_dict.pop(key_name, None)
-        if val is not None:
-            new_dict[key_name] = val
+        if key_name in in_dict:
+            val = in_dict.pop(key_name, None)
+            if val is not None or (val is None and key_name in nullable_fields):
+                new_dict[key_name] = val
     return in_dict, new_dict
 
 
@@ -248,7 +250,7 @@ class IdentifierClient(BaseClient):
           Additional metadata associated with the identifier
 
         """
-        kwargs, body = _split_dict(kwargs, _identifier_properties)
-        self.logger.info('IdentifierClient.update_identifier({}, ...)'.format(
-            body.get('identifier_id')))
+        kwargs, body = _split_dict(kwargs, _identifier_properties,
+                                   nullable_fields=frozenset(["replaces", "replaced_by"]))
+        self.logger.info('IdentifierClient.update_identifier({}, ...)'.format(identifier_id))
         return self.put(identifier_id, body, params=kwargs)
