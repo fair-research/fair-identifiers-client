@@ -1,5 +1,10 @@
 from os import path, environ
 from six.moves.configparser import ConfigParser
+from distutils.version import LooseVersion
+import globus_sdk
+
+GLOBUS_SDK_VERSION = tuple(LooseVersion(globus_sdk.__version__).version)
+GLOBUS_SDK_MAJOR_VERSION = GLOBUS_SDK_VERSION[0]
 
 _default = path.join(path.expanduser('~'), '.fair_identifier')
 IDENTIFIER_CONFIG_FILE = path.abspath(
