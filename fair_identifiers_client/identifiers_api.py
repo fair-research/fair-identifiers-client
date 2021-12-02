@@ -1,9 +1,17 @@
+import logging
 from globus_sdk import (AccessTokenAuthorizer, ClientCredentialsAuthorizer,
                         RefreshTokenAuthorizer, NativeAppAuthClient)
-from globus_sdk.base import BaseClient, safe_stringify
-from globus_sdk.exc import GlobusAPIError
+from globus_sdk import GlobusAPIError
+try:
+    from globus_sdk import BaseClient
+except ImportError:
+    # Import for Globus SDK v2. Can be removed once we drop support for v2.
+    from globus_sdk.base import BaseClient
 
+from fair_identifiers_client.config import GLOBUS_SDK_MAJOR_VERSION
 from fair_identifiers_client.login import extract_and_save_tokens
+
+log = logging.getLogger(__name__)
 
 _namespace_properties = [
     'description', 'display_name', 'creators', 'admins', 'identifier_admins',
@@ -35,8 +43,8 @@ def identifiers_client(config, **kwargs):
     authorizer = RefreshTokenAuthorizer(
         refresh_token,
         authorizer_client,
-        access_token,
-        at_expires,
+        access_token=access_token,
+        expires_at=at_expires,
         on_refresh=_on_refresh,
     )
 
@@ -77,9 +85,76 @@ class IdentifierClient(BaseClient):
                                 ClientCredentialsAuthorizer)
 
     error_class = IdentifierClientError
+    service_name = 'identifiers'
+    base_path = ''
 
-    def __init__(self, authorizer=None, base_url="https://identifiers.fair-research.org/", **kwargs):
-        super().__init__(self, "identifier", base_url=base_url, authorizer=authorizer, **kwargs)
+    def __init__(self, *args, **kwargs):
+        if GLOBUS_SDK_MAJOR_VERSION >= 3:
+            super().__init__(*args, **kwargs)
+        else:
+            super().__init__(self, "identifier", **kwargs)
+
+    def get(self, path, *args, **kwargs):
+        """
+        This method overrides the globus_sdk.BaseClient methods to provide a compatibility
+        layer between v2 and v3. When ready to drop v2 support, simply delete this method.
+        """
+        if GLOBUS_SDK_MAJOR_VERSION >= 3:
+            return super().get(path, *args, **kwargs)
+        else:
+            if 'query_params' in kwargs:
+                params = kwargs.pop('query_params')
+                kwargs['params'] = params
+            return super().get(path, *args, **kwargs)
+
+    def delete(self, path, *args, **kwargs):
+        """
+        This method overrides the globus_sdk.BaseClient methods to provide a compatibility
+        layer between v2 and v3. When ready to drop v2 support, simply delete this method.
+        """
+        if GLOBUS_SDK_MAJOR_VERSION >= 3:
+            return super().delete(path, *args, **kwargs)
+        else:
+            if 'query_params' in kwargs:
+                params = kwargs.pop('query_params')
+                kwargs['params'] = params
+            return super().delete(path, *args, **kwargs)
+
+    def post(self, path, *args, **kwargs):
+        """
+        This method overrides the globus_sdk.BaseClient methods to provide a compatibility
+        layer between v2 and v3. When ready to drop v2 support, simply delete this method.
+        """
+        if GLOBUS_SDK_MAJOR_VERSION >= 3:
+            return super().post(path, *args, **kwargs)
+        else:
+            if 'query_params' in kwargs:
+                params = kwargs.pop('query_params')
+                kwargs['params'] = params
+
+            data = None
+            if 'data' in kwargs:
+                data = kwargs.pop('data')
+
+            return super().post(path, data, **kwargs)
+
+    def put(self, path, *args, **kwargs):
+        """
+        This method overrides the globus_sdk.BaseClient methods to provide a compatibility
+        layer between v2 and v3. When ready to drop v2 support, simply delete this method.
+        """
+        if GLOBUS_SDK_MAJOR_VERSION >= 3:
+            return super().put(path, *args, **kwargs)
+        else:
+            if 'query_params' in kwargs:
+                params = kwargs.pop('query_params')
+                kwargs['params'] = params
+
+            data = None
+            if 'data' in kwargs:
+                data = kwargs.pop('data')
+
+            return super().put(path, data, **kwargs)
 
     def create_namespace(self, **kwargs):
         """
@@ -105,10 +180,9 @@ class IdentifierClient(BaseClient):
 
         """
         kwargs, body = _split_dict(kwargs, _namespace_properties)
-        self.logger.info("IdentifierClient.create_namespace({}, ...)".format(
+        log.info("IdentifierClient.create_namespace({}, ...)".format(
             body.get('display_name')))
-        path = self.qjoin_path("namespace")
-        return self.post(path, body, params=kwargs)
+        return self.post('namespace', data=body, query_params=kwargs)
 
     def update_namespace(self, namespace_id, **kwargs):
         """
@@ -135,10 +209,10 @@ class IdentifierClient(BaseClient):
 
         """
         kwargs, body = _split_dict(kwargs, _namespace_properties)
-        self.logger.info(
+        log.info(
             "IdentifierClient.update_namespace({}, ...)".format(namespace_id))
-        path = self.qjoin_path("namespace", safe_stringify(namespace_id))
-        return self.put(path, body, params=kwargs)
+        path = 'namespace/{}'.format(namespace_id)
+        return self.put(path, data=body, query_params=kwargs)
 
     def get_namespace(self, namespace_id, **params):
         """
@@ -148,10 +222,10 @@ class IdentifierClient(BaseClient):
           ``namespace_id`` (*string*)
           The id for the namespace to retrieve
         """
-        path = self.qjoin_path("namespace", safe_stringify(namespace_id))
-        self.logger.info(
+        log.info(
             "IdentifierClient.get_namespace({})".format(namespace_id))
-        return self.get(path, params=params)
+        path = 'namespace/{}'.format(namespace_id)
+        return self.get(path, query_params=params)
 
     def delete_namespace(self, namespace_id, **params):
         """
@@ -161,10 +235,10 @@ class IdentifierClient(BaseClient):
           ``namespace_id`` (*string*)
           The id for the namespace to remove
         """
-        path = self.qjoin_path("namespace", safe_stringify(namespace_id))
-        self.logger.info(
+        log.info(
             "IdentifierClient.delete_namespace({})".format(namespace_id))
-        return self.delete(path, params=params)
+        path = 'namespace/{}'.format(namespace_id)
+        return self.delete(path, query_params=params)
 
     def create_identifier(self, **kwargs):
         """
@@ -191,11 +265,10 @@ class IdentifierClient(BaseClient):
 
         """
         kwargs, body = _split_dict(kwargs, _identifier_properties)
-        self.logger.info('IdentifierClient.create_identifier({}, ...)'.format(
-            body.get('namespace_id')))
-        path = self.qjoin_path('namespace/{}/identifier'.format(
-            kwargs['namespace']))
-        return self.post(path, body, params=kwargs)
+        log.info('IdentifierClient.create_identifier({}, ...)'.format(
+                 body.get('namespace_id')))
+        path = 'namespace/{}/identifier'.format(kwargs['namespace'])
+        return self.post(path, data=body, query_params=kwargs)
 
     def get_identifier_by_checksum(self, checksum, function=None):
         """
@@ -204,11 +277,10 @@ class IdentifierClient(BaseClient):
         ``checksum`` The checksum generated by hashing a file with ``function``
         ``function`` The algorithm used to generate the checksum
         """
-        check, func = safe_stringify(checksum), safe_stringify(function)
-        self.logger.info('IdentifierClient.get_checksum({}, {})'.format(
-            check, func))
-        path = self.qjoin_path('/checksum/{}'.format(checksum))
-        return self.get(path, params={"function":function})
+        log.info('IdentifierClient.get_checksum({}, {})'.format(
+                 checksum, function))
+        path = 'checksum/{}'.format(checksum)
+        return self.get(path, query_params={'function': function})
 
     def get_identifier(self, identifier_id):
         """
@@ -217,10 +289,8 @@ class IdentifierClient(BaseClient):
         ** Parameters **
         ``identifier_id`` The identification url for the identifier
         """
-        path = safe_stringify(identifier_id)
-        self.logger.info(
-            'IdentifierClient.get_identifier({})'.format(identifier_id))
-        return self.get(path)
+        log.info('IdentifierClient.get_identifier({})'.format(identifier_id))
+        return self.get(identifier_id)
 
     def update_identifier(self, identifier_id, **kwargs):
         """
@@ -252,5 +322,5 @@ class IdentifierClient(BaseClient):
         """
         kwargs, body = _split_dict(kwargs, _identifier_properties,
                                    nullable_fields=frozenset(["replaces", "replaced_by"]))
-        self.logger.info('IdentifierClient.update_identifier({}, ...)'.format(identifier_id))
-        return self.put(identifier_id, body, params=kwargs)
+        log.info('IdentifierClient.update_identifier({}, ...)'.format(identifier_id))
+        return self.put(identifier_id, data=body, query_params=kwargs)

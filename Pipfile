@@ -5,8 +5,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-globus-sdk = "*"
 six = "*"
+globus-sdk = "globus-sdk>=1.0.0<4.0.0"
 fair-identifiers-client = {path = ".", editable = true}
 
 [dev-packages]
