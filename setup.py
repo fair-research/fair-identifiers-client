@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     packages=find_packages(),
     install_requires=[
-        "globus-sdk>=1.6.0",
+        "globus-sdk>=1.6.0<4.0.0",
         "six>=1.10.0,<2.0.0",
     ],
     entry_points={
