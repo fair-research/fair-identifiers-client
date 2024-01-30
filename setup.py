@@ -9,7 +9,7 @@ with open(os.path.join(BASE_DIR, 'README.md')) as f:
 
 setup(
     name='fair-identifiers-client',
-    version='0.5.0',
+    version='0.5.1',
     url='https://github.com/fair-research/fair-identifiers-client',
     author="FAIR Research Team",
     description='FAIR Research Identifiers Service Client',
@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     packages=find_packages(),
     install_requires=[
-        "globus-sdk>=1.6.0<4.0.0",
+        "globus-sdk>=1.6.0,<4.0.0",
         "six>=1.10.0,<2.0.0",
     ],
     entry_points={
